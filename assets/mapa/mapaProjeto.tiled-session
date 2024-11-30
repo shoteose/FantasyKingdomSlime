@@ -1,0 +1,36 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "mapa.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "mapa.tmx": {
+            "scale": 0.3898958333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 960.5129575207054,
+                "y": 480.8976756612343
+            }
+        },
+        "mapa.tmx#spreedsheet": {
+            "scaleInDock": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/joao-/Desktop/tp/assets",
+    "last.imagePath": "C:/Users/joao-/Desktop/tp/assets",
+    "map.height": 30,
+    "map.lastUsedExportFilter": "Ficheiros de mapa JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 60,
+    "openFiles": [
+        "mapa.tmx"
+    ],
+    "project": "mapaProjeto.tiled-project",
+    "recentFiles": [
+        "mapa.tmx"
+    ],
+    "tileset.embedInMap": true
+}

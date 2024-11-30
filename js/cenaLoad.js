@@ -8,16 +8,21 @@ var CenaLoad = new Phaser.Class({
 
     preload: function () {
         // -- Carregar o tileset
-        this.load.image('tiles', 'assets/map/spritesheet.png');
+        this.load.image('tiles', 'assets/mapa/spreedsheet.png');
 
         // -- Carregar o mapa JSON
-        this.load.tilemapTiledJSON('map', 'assets/map/map.json');
+        this.load.tilemapTiledJSON('map', 'assets/mapa/map.json',32,32);
 
         // -- Carregar spritesheet do jogador
-        this.load.spritesheet('player', 'assets/RPG_assets.png', {
-            frameWidth: 16,
-            frameHeight: 16,
+        this.load.spritesheet('player', 'assets/characters/carater_ajudavFF.png', {
+            frameWidth: 32,
+            frameHeight: 32,
         });
+        this.load.spritesheet('slime', 'assets/characters/slime_og.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+        this.load.image('coracao','assets/coracao.png');
     },
 
     create: function () {

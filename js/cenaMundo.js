@@ -1,5 +1,4 @@
 var cenaMundo = new Phaser.Class({
-
     Extends: Phaser.Scene,
 
     initialize:
@@ -10,23 +9,36 @@ var cenaMundo = new Phaser.Class({
     preload: function () { },
 
     create: function () {
-
+        // Carregar o mapa
         var mapa = this.make.tilemap({ key: 'map' });
 
-        //Obter nime de um tileset
-        //Disponivel ficheiro json
-
-        var tiles = mapa.addTilesetImage('TX_Spreedsheetv5', 'tiles', 32, 32);
+        // Associar o tileset ao mapa (nome no JSON e chave carregada)
+        var tiles = mapa.addTilesetImage('spreedsheet', 'tiles');
 
         // Criar camadas do mapa
-        var solo = mapa.createLayer('solo', tiles, 0, 0);
-        var sombra = mapa.createLayer('sombra', tiles, 0, 0);
-        var obstaculo = mapa.createLayer('obstaculo', tiles, 0, 0);
-        var obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);
-        var obstaculos3 = mapa.createLayer('obstaculos3', tiles, 0, 0);
+        const soloBase = mapa.createLayer('soloBase', tiles, 0, 0);
+        const solo = mapa.createLayer('solo', tiles, 0, 0);
+        const sombra = mapa.createLayer('sombra', tiles, 0, 0);
+        const obstaculos = mapa.createLayer('obstaculos', tiles, 0, 0);
+        const obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);
+        const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
 
-        //adicionar o player (frame 6)
-        this.player = this.physics.add.sprite(50, 100, 'player', 6);
+        // Iniciar o array de inimigos como uma propriedade da cena
+        this.inimigos = [];
+        this.lastDir;
+        this.boost = false;
+        this.vidas = 3;
+        this.gameover = false;
+
+        this.sequenciaCoracoes = [];
+
+        this.criarCoracoes(this.sequenciaCoracoes);
+
+        obstaculos.setCollisionByExclusion([-1]);
+        obstaculos2.setCollisionByExclusion([-1]);
+
+        // Adicionar o player (frame 0)
+        this.player = this.physics.add.sprite(150, 150, 'player', 0);
 
         // Limitar o movimento do player à área de jogo
         this.physics.world.bounds.width = mapa.widthInPixels;
@@ -35,6 +47,7 @@ var cenaMundo = new Phaser.Class({
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.on('pointerdown', this.onClick, this);
 
         // Colocar câmera a seguir o player
         this.cameras.main.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
@@ -43,73 +56,158 @@ var cenaMundo = new Phaser.Class({
         // Corrigir desenho de linhas
         this.cameras.main.roundPixels = true;
 
+        this.createAnimacoes();
+        this.createInimigos(obstaculos, obstaculos2);
+        this.criarColisaoPlayer(obstaculos, obstaculos2);
+   
+    },
+
+    criarCoracoes: function (sequenciaCoracoes) {
+
+        for (let i = 0; i < 3; i++) {
+            let coracao = this.add.image(20 + (i * 30), 20, 'coracao');
+            coracao.setScale(0.10);
+            coracao.setScrollFactor(0); // Faz com que não se mexa com a camara
+            sequenciaCoracoes.push(coracao);
+        }
+
+    },
+
+    // Colisão com o inimigo
+    collisaoInimigo: function (player, slime) {
+
+        if (this.gameover) return;
+
+        this.perderVida();
+        slime.destroy();
+        this.criarColisaoPlayer();
+
+    },
+
+    perseguirPlayer: function (slime) {
+        if (slime && slime.body) {
+
+            this.physics.moveToObject(slime, this.player, 30);
+        }
+    },
+
+    onClick: function (pointer) {
+        this.boost = true;
+    },
+
+    createAnimacoes: function () {
         // Animações do player
         this.anims.create({
             key: 'esquerdadireita',
-            frames: this.anims.generateFrameNumbers('player',
-                { frames: [1, 7, 1, 13] }),
+            frames: this.anims.generateFrameNumbers('player', { frames: [24, 25, 25, 27, 28, 29] }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'up',
-            frames: this.anims.generateFrameNumbers('player',
-                { frames: [2, 8, 2, 14] }),
+            frames: this.anims.generateFrameNumbers('player', { frames: [30, 31, 32, 33, 34, 35] }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'down',
-            frames: this.anims.generateFrameNumbers('player',
-                { frames: [0, 6, 0, 12] }),
+            frames: this.anims.generateFrameNumbers('player', { frames: [18, 19, 20, 21, 22, 23] }),
             frameRate: 10,
             repeat: -1
         });
 
-        /*
-        // Colisão com a layer de obstáculos
-        obstaculos.setCollisionByExclusion([-1]);
-        this.physics.add.collider(this.player, obstaculos);
-*/
-        // Criar 30 "zonas inimigas"
-        this.zonas = this.physics.add.group({ classType: Phaser.GameObjects.Zone });
-        for (let i = 0; i < 30; i++) {
-            let x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
-            let y = Phaser.Math.RND.between(0, this.physics.world.bounds.height);
-            this.zonas.create(x, y, 20, 20);
-        }
+        this.anims.create({
+            key: 'slimeAnimacao',
+            frames: this.anims.generateFrameNumbers('slime', { frames: [21, 22, 23, 24, 25, 26] }),
+            frameRate: 10,
+            repeat: -1
+        });
 
-        // Colisão com as "zonas inimigas"
-        this.physics.add.overlap(this.player, this.zonas, this.collisaoInimigo, false, this);
+        this.anims.create({
+            key: 'slimeMorre',
+            frames: this.anims.generateFrameNumbers('slime', { frames: [84, 85, 86, 87, 88] }),
+            frameRate: 10,
+            repeat: -1
+        });
+
     },
 
-    // Colisão com o inimigo
-    collisaoInimigo: function (player, zona) {
-        zona.x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
-        zona.y = Phaser.Math.RND.between(0, this.physics.world.bounds.height);
+    createInimigos: function (obstaculos, obstaculos2) {
+
+        // Criar 10 inimigos (slimes)
+        for (let i = 0; i < 10; i++) {
+            let x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
+            let y = Phaser.Math.RND.between(0, this.physics.world.bounds.height);
+
+            let slimeBeta = this.physics.add.sprite(x, y, 'slime', 1);
+
+            console.log("Slime criado em:", x, y);
+
+            slimeBeta.anims.play('slimeAnimacao', true);
+
+            this.physics.add.collider(slimeBeta, obstaculos);
+            this.physics.add.collider(slimeBeta, obstaculos2);
+
+            this.physics.add.overlap(this.player, slimeBeta, this.collisaoInimigo, false, this);
+
+            this.inimigos.push(slimeBeta);
+        }
+    },
+
+    perderVida: function () {
 
         this.cameras.main.shake(100);
         this.cameras.main.flash(100);
+
+        this.vidas--;
+
+        if (this.vidas == 0) {
+
+            this.gameOver();
+
+        }
+
+        this.atualizarVidas();
+
     },
 
-    update: function () {
-        this.player.body.setVelocity(0);
+    criarColisaoPlayer: function (obstaculos, obstaculos2) {
 
+        this.physics.add.collider(this.player, obstaculos);
+        this.physics.add.collider(this.player, obstaculos2);
+        this.playerCollider = this.physics.add.collider(this.player, this.inimigos, this.collisaoInimigo, null, this);
+
+    },
+
+    atualizarVidas: function () {
+
+        for (let i = 0; i < 3; i++) {
+            if (i < this.vidas) {
+                this.sequenciaCoracoes[i].setVisible(true);
+            } else {
+                this.sequenciaCoracoes[i].setVisible(false);
+            }
+        }
+    },
+
+    movimento: function (velocidade) {
+
+        // Movimento do jogador
         if (this.cursors.left.isDown) {
-            this.player.body.setVelocityX(-80);
+            this.player.body.setVelocityX(-velocidade);
         } else if (this.cursors.right.isDown) {
-            this.player.body.setVelocityX(80);
+            this.player.body.setVelocityX(velocidade);
         }
 
         if (this.cursors.up.isDown) {
-            this.player.body.setVelocityY(-80);
+            this.player.body.setVelocityY(-velocidade);
         } else if (this.cursors.down.isDown) {
-            this.player.body.setVelocityY(80);
+            this.player.body.setVelocityY(velocidade);
         }
 
-        // Animações do player 
+        // Animações do jogador
         if (this.cursors.left.isDown) {
             this.player.anims.play('esquerdadireita', true);
             this.player.flipX = true;
@@ -123,9 +221,46 @@ var cenaMundo = new Phaser.Class({
         }
         else if (this.cursors.down.isDown) {
             this.player.anims.play('down', true);
-        }
-        else {
+        } else {
             this.player.anims.stop();
         }
+    },
+
+    gameOver: function () {
+
+        this.gameover = true;
+
+
+    },
+
+    update: function () {
+
+        this.atualizarVidas();
+
+        // Parar o movimento do jogador
+        this.player.body.setVelocity(0);
+
+        let velocidade = this.boost ? 120 : 80;
+
+
+
+        if (!this.gameover) {
+
+            this.movimento(velocidade);
+
+            // fazer inimigos perseguir
+            this.inimigos.forEach(this.perseguirPlayer, this);
+
+        } else {
+
+            this.inimigos.forEach(function (slime) {
+
+                if (slime && slime.body) {
+                    slime.body.setVelocity(0);
+                }
+
+            });
+        }
+
     }
 });

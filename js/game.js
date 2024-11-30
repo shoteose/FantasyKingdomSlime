@@ -1,18 +1,18 @@
 var config = {
-    type: Phaser.CANVAS,  // Corrigido de 'typeof' para 'type'
-    parent: 'conteudo',
-    width: 320,
-    height: 240,
-    zoom: 2,
-    pixelArt: true,
-    physics: {
+    typeof : Phaser.CANVAS,
+    parent : 'conteudo',
+    width  : 750,
+    height : 450,
+    zoom   : 2,
+    pixelArt : true,
+    physics : {
         default: 'arcade',
-        arcade: {
-            gravity: { y: 0 },
-            debug: true
+        arcade : {
+            gravity : { y : 0 },
+            debug : true
         }
     },
-    scene: [
+    scene : [
         CenaLoad, cenaMundo
     ]
 };
