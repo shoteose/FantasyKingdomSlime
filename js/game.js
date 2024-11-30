@@ -13,7 +13,7 @@ var config = {
         }
     },
     scene: [
-        MenuScene, HowToScene, Options, CenaLoad, CenaMundo
+        MenuScene, HowToScene, Options, CenaLoad, CenaMundo, GameOverScene
     ]
 };
 

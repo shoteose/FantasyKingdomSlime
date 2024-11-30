@@ -17,18 +17,36 @@ var CenaMundo = new Phaser.Class({
 
         // Criar camadas do mapa
         const soloBase = mapa.createLayer('soloBase', tiles, 0, 0);
+
         const solo = mapa.createLayer('solo', tiles, 0, 0);
         const sombra = mapa.createLayer('sombra', tiles, 0, 0);
         const obstaculos = mapa.createLayer('obstaculos', tiles, 0, 0);
         const obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);
+
+        // Adicionar o player (frame 0)
+        this.player = this.physics.add.sprite(150, 150, 'player', 0);
+
         const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
 
-        // Iniciar o array de inimigos como uma propriedade da cena
         this.inimigos = [];
         this.lastDir;
         this.boost = false;
         this.vidas = 3;
         this.gameover = false;
+        this.coletados = 0;
+
+        this.pontuacao = 0;
+        this.tempo = 0;
+
+        this.relogio = this.time.addEvent({ delay: 1000, callback: this.atualizaTimer, callbackScope: this, loop: true });
+
+
+        this.textoTempo = this.add.text(375, 15, "Tempo: " + this.tempo);
+
+        this.textoColetavel = this.add.text(615, 15, this.coletados + " / 10");
+
+        this.textoTempo.setScrollFactor(0);
+        this.textoColetavel.setScrollFactor(0);
 
         this.energia = this.add.image(720, 420, 'relampago');
         this.energia.setScale(0.05);
@@ -42,8 +60,7 @@ var CenaMundo = new Phaser.Class({
         obstaculos.setCollisionByExclusion([-1]);
         obstaculos2.setCollisionByExclusion([-1]);
 
-        // Adicionar o player (frame 0)
-        this.player = this.physics.add.sprite(150, 150, 'player', 0);
+
 
         // Limitar o movimento do player à área de jogo
         this.physics.world.bounds.width = mapa.widthInPixels;
@@ -64,8 +81,14 @@ var CenaMundo = new Phaser.Class({
 
         this.createAnimacoes();
         this.createInimigos(obstaculos, obstaculos2);
+        this.createColecao(obstaculos, obstaculos2);
         this.criarColisaoPlayer(obstaculos, obstaculos2);
 
+    },
+
+    atualizaTimer: function () {
+        this.tempo++;
+        this.textoTempo.setText("Tempo: " + this.tempo);
     },
 
     criarUI: function (sequenciaCoracoes) {
@@ -75,6 +98,13 @@ var CenaMundo = new Phaser.Class({
             coracao.setScrollFactor(0); // Faz com que não se mexa com a camara
             sequenciaCoracoes.push(coracao);
         }
+
+        let info = this.add.image(700, 20, 'motorEolica');
+        info.setScale(0.15);
+        info.setScrollFactor(0);
+
+
+
     },
 
     // Colisão com o inimigo
@@ -94,7 +124,7 @@ var CenaMundo = new Phaser.Class({
 
     fazBoost: function (pointer) {
         this.boost = true;
-        this.energia.setVisible(true); 
+        this.energia.setVisible(true);
     },
 
     tiraBoost: function (pointer) {
@@ -162,6 +192,54 @@ var CenaMundo = new Phaser.Class({
         }
     },
 
+    verificaXY: function (obstaculos, obstaculos2) {
+        let coordenadas = [];
+        let x, y, tile, tile2;
+        do {
+            x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
+            y = Phaser.Math.RND.between(0, this.physics.world.bounds.height);
+
+            // Verificar se a posição gerada está em um obstáculo
+            tile = obstaculos.getTileAtWorldXY(x, y);
+            tile2 = obstaculos2.getTileAtWorldXY(x, y);
+        } while ((tile && tile.index !== -1) || (tile2 && tile2.index !== -1));  // Se o tile não for -1 (um tile vazio), tente novamente
+
+        coordenadas.push(x);
+        coordenadas.push(y);
+        return coordenadas;
+
+    },
+
+    createColecao: function (obstaculos, obstaculos2) {
+        // Criar 10 coletaveis
+        for (let i = 0; i < 10; i++) {
+
+            let coordenadas = this.verificaXY(obstaculos, obstaculos2);
+            x = coordenadas[0];
+            y = coordenadas[1];
+
+            let colecionavel = this.physics.add.image(x, y, 'motorEolica');
+
+            colecionavel.setScale(0.15);
+            console.log("Colecionavel criado em:", x, y);
+
+            this.physics.add.overlap(this.player, colecionavel, this.coletar, false, this);
+
+        }
+    },
+
+    coletar: function (player, colecionavel) {
+        colecionavel.destroy();
+
+        this.coletados++;
+        this.textoColetavel.setText(this.coletados + " / 10");
+
+        if (this.coletados == 10) {
+            this.gameOver();
+        }
+
+    },
+
     perderVida: function () {
         this.cameras.main.shake(100);
         this.cameras.main.flash(100);
@@ -226,6 +304,9 @@ var CenaMundo = new Phaser.Class({
 
     gameOver: function () {
         this.gameover = true;
+        let pontTempo = 100 - (this.tempo / 10)
+        this.pontuacao = this.coletados * pontTempo - (3 - this.vidas) * 10;
+        this.scene.start('GameOver', this.pontuacao)
     },
 
     update: function () {
@@ -235,8 +316,6 @@ var CenaMundo = new Phaser.Class({
         this.player.body.setVelocity(0);
 
         let velocidade = this.boost ? 120 : 80;
-
-        console.log(this.boost + "   " + velocidade);
 
         if (!this.gameover) {
 
