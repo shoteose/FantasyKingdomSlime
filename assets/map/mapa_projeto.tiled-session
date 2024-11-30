@@ -1,0 +1,111 @@
+{
+    "activeFile": "map.tmx",
+    "expandedProjectPaths": [
+        ".",
+        "tiles/TileSetEditor",
+        "tiles"
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "#as": {
+            "dynamicWrapping": true
+        },
+        "#building_1": {
+            "scaleInEditor": 1
+        },
+        "map.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 1010,
+                "y": 464
+            }
+        },
+        "map.tmx#TX Plant": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map.tmx#TX_Spreedsheetv5": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 1
+        },
+        "map.tmx#spritesheet": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Plant Shadow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Plant.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Props Shadow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Props.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Struct.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Tileset Grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Tileset Stone Ground.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX Tileset Wall.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX_Spreedsheet.tsx": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 0.12
+        },
+        "tiles/TileSetEditor/TX_Spreedsheetv2.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.75,
+            "scaleInEditor": 0.25
+        },
+        "tiles/TileSetEditor/TX_Spreedsheetv3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiles/TileSetEditor/TX_Spreedsheetv4.tsx": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/xampp/htdocs/SM/tp/assets/map",
+    "last.imagePath": "C:/xampp/htdocs/SM/tp/assets/map",
+    "map.lastUsedExportFilter": "Todos os Ficheiros (*)",
+    "openFiles": [
+        "map.tmx"
+    ],
+    "project": "mapa_projeto.tiled-project",
+    "recentFiles": [
+        "map.tmx",
+        "tiles/TileSetEditor/TX_Spreedsheetv4.tsx",
+        "tiles/TileSetEditor/TX_Spreedsheetv3.tsx",
+        "tiles/TileSetEditor/TX_Spreedsheetv2.tsx",
+        "tiles/TileSetEditor/TX_Spreedsheet.tsx",
+        "tiles/TileSetEditor/TX Plant.tsx",
+        "tiles/TileSetEditor/TX Plant Shadow.tsx",
+        "tiles/TileSetEditor/TX Struct.tsx",
+        "tiles/TileSetEditor/TX Props.tsx",
+        "tiles/TileSetEditor/TX Props Shadow.tsx",
+        "tiles/TileSetEditor/TX Tileset Stone Ground.tsx",
+        "tiles/TileSetEditor/TX Tileset Wall.tsx"
+    ]
+}
