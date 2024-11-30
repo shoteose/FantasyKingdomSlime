@@ -23,9 +23,10 @@ var CenaLoad = new Phaser.Class({
             frameHeight: 32,
         });
         this.load.image('coracao','assets/coracao.png');
+        this.load.image('relampago','assets/relampago.png');
     },
 
     create: function () {
-        this.scene.start('cenaMundo');
+        this.scene.start('CenaMundo');
     },
 });

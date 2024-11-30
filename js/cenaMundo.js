@@ -1,9 +1,9 @@
-var cenaMundo = new Phaser.Class({
+var CenaMundo = new Phaser.Class({
     Extends: Phaser.Scene,
 
     initialize:
-        function cenaMundo() {
-            Phaser.Scene.call(this, { key: 'cenaMundo' });
+        function CenaMundo() {
+            Phaser.Scene.call(this, { key: 'CenaMundo' });
         },
 
     preload: function () { },
@@ -30,9 +30,14 @@ var cenaMundo = new Phaser.Class({
         this.vidas = 3;
         this.gameover = false;
 
-        this.sequenciaCoracoes = [];
+        this.energia = this.add.image(720, 420, 'relampago');
+        this.energia.setScale(0.05);
+        this.energia.setVisible(false);
 
-        this.criarCoracoes(this.sequenciaCoracoes);
+        this.energia.setScrollFactor(0);
+
+        this.sequenciaCoracoes = [];
+        this.criarUI(this.sequenciaCoracoes);
 
         obstaculos.setCollisionByExclusion([-1]);
         obstaculos2.setCollisionByExclusion([-1]);
@@ -47,7 +52,8 @@ var cenaMundo = new Phaser.Class({
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.input.on('pointerdown', this.onClick, this);
+        this.input.on('pointerdown', this.fazBoost, this);
+        this.input.on('pointerup', this.tiraBoost, this);
 
         // Colocar câmera a seguir o player
         this.cameras.main.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
@@ -59,40 +65,42 @@ var cenaMundo = new Phaser.Class({
         this.createAnimacoes();
         this.createInimigos(obstaculos, obstaculos2);
         this.criarColisaoPlayer(obstaculos, obstaculos2);
-   
+
     },
 
-    criarCoracoes: function (sequenciaCoracoes) {
-
+    criarUI: function (sequenciaCoracoes) {
         for (let i = 0; i < 3; i++) {
             let coracao = this.add.image(20 + (i * 30), 20, 'coracao');
             coracao.setScale(0.10);
             coracao.setScrollFactor(0); // Faz com que não se mexa com a camara
             sequenciaCoracoes.push(coracao);
         }
-
     },
 
     // Colisão com o inimigo
     collisaoInimigo: function (player, slime) {
-
         if (this.gameover) return;
 
         this.perderVida();
         slime.destroy();
         this.criarColisaoPlayer();
-
     },
 
     perseguirPlayer: function (slime) {
         if (slime && slime.body) {
-
             this.physics.moveToObject(slime, this.player, 30);
         }
     },
 
-    onClick: function (pointer) {
+    fazBoost: function (pointer) {
         this.boost = true;
+        this.energia.setVisible(true); 
+    },
+
+    tiraBoost: function (pointer) {
+
+        this.boost = false;
+        this.energia.setVisible(false);
     },
 
     createAnimacoes: function () {
@@ -131,11 +139,9 @@ var cenaMundo = new Phaser.Class({
             frameRate: 10,
             repeat: -1
         });
-
     },
 
     createInimigos: function (obstaculos, obstaculos2) {
-
         // Criar 10 inimigos (slimes)
         for (let i = 0; i < 10; i++) {
             let x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
@@ -157,32 +163,25 @@ var cenaMundo = new Phaser.Class({
     },
 
     perderVida: function () {
-
         this.cameras.main.shake(100);
         this.cameras.main.flash(100);
 
         this.vidas--;
 
         if (this.vidas == 0) {
-
             this.gameOver();
-
         }
 
         this.atualizarVidas();
-
     },
 
     criarColisaoPlayer: function (obstaculos, obstaculos2) {
-
         this.physics.add.collider(this.player, obstaculos);
         this.physics.add.collider(this.player, obstaculos2);
         this.playerCollider = this.physics.add.collider(this.player, this.inimigos, this.collisaoInimigo, null, this);
-
     },
 
     atualizarVidas: function () {
-
         for (let i = 0; i < 3; i++) {
             if (i < this.vidas) {
                 this.sequenciaCoracoes[i].setVisible(true);
@@ -193,7 +192,6 @@ var cenaMundo = new Phaser.Class({
     },
 
     movimento: function (velocidade) {
-
         // Movimento do jogador
         if (this.cursors.left.isDown) {
             this.player.body.setVelocityX(-velocidade);
@@ -227,14 +225,10 @@ var cenaMundo = new Phaser.Class({
     },
 
     gameOver: function () {
-
         this.gameover = true;
-
-
     },
 
     update: function () {
-
         this.atualizarVidas();
 
         // Parar o movimento do jogador
@@ -242,13 +236,11 @@ var cenaMundo = new Phaser.Class({
 
         let velocidade = this.boost ? 120 : 80;
 
-
+        console.log(this.boost + "   " + velocidade);
 
         if (!this.gameover) {
 
             this.movimento(velocidade);
-
-            // fazer inimigos perseguir
             this.inimigos.forEach(this.perseguirPlayer, this);
 
         } else {
