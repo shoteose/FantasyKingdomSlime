@@ -25,6 +25,9 @@ var CenaLoad = new Phaser.Class({
         this.load.image('coracao','assets/coracao.png');
         this.load.image('relampago','assets/relampago.png');
         this.load.image('motorEolica','assets/motorEolica.png');
+        this.load.audio('andar','assets/sounds/steps.ogg');
+        this.load.audio('dano','assets/sounds/hitHurt.wav');
+        this.load.audio('pickup','assets/sounds/pickupCoin.wav');
 
     },
 

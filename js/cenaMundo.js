@@ -9,6 +9,18 @@ var CenaMundo = new Phaser.Class({
     preload: function () { },
 
     create: function () {
+
+        this.inimigos = [];
+        this.lastDir;
+        this.boost = false;
+        this.vidas = 3;
+        this.gameover = false;
+        this.coletados = 0;
+
+        this.pontuacao = 0;
+        this.tempo = 0;
+        this.somAndar = false;
+
         // Carregar o mapa
         var mapa = this.make.tilemap({ key: 'map' });
 
@@ -26,22 +38,20 @@ var CenaMundo = new Phaser.Class({
         // Adicionar o player (frame 0)
         this.player = this.physics.add.sprite(150, 150, 'player', 0);
 
+        
+
         const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
 
         const naoObstaculo2 = mapa.createLayer('naoObstaculo2', tiles, 0, 0);
 
-        this.inimigos = [];
-        this.lastDir;
-        this.boost = false;
-        this.vidas = 3;
-        this.gameover = false;
-        this.coletados = 0;
 
-        this.pontuacao = 0;
-        this.tempo = 0;
+        // Limitar o movimento do player à área de jogo
+        this.physics.world.bounds.width = mapa.widthInPixels;
+        this.physics.world.bounds.height = mapa.heightInPixels;
+        this.player.setCollideWorldBounds(true);
+
 
         this.relogio = this.time.addEvent({ delay: 1000, callback: this.atualizaTimer, callbackScope: this, loop: true });
-
 
         this.textoTempo = this.add.text(375, 15, "Tempo: " + this.tempo);
 
@@ -64,10 +74,6 @@ var CenaMundo = new Phaser.Class({
 
 
 
-        // Limitar o movimento do player à área de jogo
-        this.physics.world.bounds.width = mapa.widthInPixels;
-        this.physics.world.bounds.height = mapa.heightInPixels;
-        this.player.setCollideWorldBounds(true);
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -84,7 +90,30 @@ var CenaMundo = new Phaser.Class({
         this.createAnimacoes();
         this.createInimigos(obstaculos, obstaculos2);
         this.createColecao(obstaculos, obstaculos2);
+        this.createCoracoesVida(obstaculos, obstaculos2);
         this.criarColisaoPlayer(obstaculos, obstaculos2);
+
+        this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
+
+        this.textoInstrucao2 = this.add.text(370, 200, "Para a Reconstruir e salvar o Reino e os Slimes.", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
+
+
+        this.textoInstrucao3 = this.add.text(370, 215, "Cuidado que os Slimes que estão Agressivos", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
 
     },
 
@@ -113,8 +142,10 @@ var CenaMundo = new Phaser.Class({
     collisaoInimigo: function (player, slime) {
         if (this.gameover) return;
 
-        this.perderVida();
         slime.destroy();
+
+        this.sound.play('dano');
+        this.perderVida();
         this.criarColisaoPlayer();
     },
 
@@ -230,8 +261,33 @@ var CenaMundo = new Phaser.Class({
         }
     },
 
+    createCoracoesVida: function (obstaculos, obstaculos2) {
+
+        for (let i = 0; i < 2; i++) {
+
+            let coordenadas = this.verificaXY(obstaculos, obstaculos2);
+            x = coordenadas[0];
+            y = coordenadas[1];
+
+            let coracoes = this.physics.add.image(x, y, 'coracao');
+
+            coracoes.setScale(0.15);
+            console.log("Coracoes criado em:", x, y);
+
+            this.physics.add.overlap(this.player, coracoes, this.coletarVida, false, this);
+
+        }
+    },
+
+    coletarVida: function (player, coracao) {
+        coracao.destroy();
+        this.sound.play('pickup');
+        this.ganharVida();
+    },
+
     coletar: function (player, colecionavel) {
         colecionavel.destroy();
+        this.sound.play('pickup');
 
         this.coletados++;
         this.textoColetavel.setText(this.coletados + " / 10");
@@ -255,6 +311,12 @@ var CenaMundo = new Phaser.Class({
         this.atualizarVidas();
     },
 
+    ganharVida: function () {
+
+        this.vidas++;
+        this.atualizarVidas();
+    },
+
     criarColisaoPlayer: function (obstaculos, obstaculos2) {
         this.physics.add.collider(this.player, obstaculos);
         this.physics.add.collider(this.player, obstaculos2);
@@ -272,6 +334,14 @@ var CenaMundo = new Phaser.Class({
     },
 
     movimento: function (velocidade) {
+
+        // se player se mexer faz com as instrucoes desapareçam
+        if (this.cursors.left.isDown || this.cursors.right.isDown || this.cursors.up.isDown || this.cursors.down.isDown) {
+            this.textoInstrucao.setVisible(false);
+            this.textoInstrucao2.setVisible(false);
+            this.textoInstrucao3.setVisible(false);
+        }
+
         // Movimento do jogador
         if (this.cursors.left.isDown) {
             this.player.body.setVelocityX(-velocidade);
@@ -285,36 +355,65 @@ var CenaMundo = new Phaser.Class({
             this.player.body.setVelocityY(velocidade);
         }
 
-        // Animações do jogador
+        // Animação e o som de andar
         if (this.cursors.left.isDown) {
             this.player.anims.play('esquerdadireita', true);
             this.player.flipX = true;
+            // se somAndar for falso faz tocar o som em lopp
+            if (!this.somAndar) {
+                this.somAndar = true;
+                this.sound.play('andar', { loop: true });
+            }
         }
         else if (this.cursors.right.isDown) {
             this.player.anims.play('esquerdadireita', true);
             this.player.flipX = false;
+            if (!this.somAndar) {
+                this.somAndar = true;
+                this.sound.play('andar', { loop: true });
+            }
         }
         else if (this.cursors.up.isDown) {
             this.player.anims.play('up', true);
+            if (!this.somAndar) {
+                this.somAndar = true;
+                this.sound.play('andar', { loop: true });
+            }
         }
         else if (this.cursors.down.isDown) {
             this.player.anims.play('down', true);
-        } else {
+            if (!this.somAndar) {
+                this.somAndar = true;
+                this.sound.play('andar', { loop: true });
+            }
+        }
+        else {
+
             this.player.anims.stop();
+
+            if (this.somAndar) {
+                this.somAndar = false;
+                this.sound.stopByKey('andar');  // Para o som
+            }
         }
     },
 
+
     gameOver: function () {
+        this.somAndar = false;
+        this.sound.stopByKey('andar');
+
         this.gameover = true;
         let pontTempo = 100 - (this.tempo / 10);
         let cacouTudo;
         this.pontuacao = this.coletados * pontTempo - (3 - this.vidas) * 10;
         if (this.coletados == 10) {
-            cacouTudo = true;
+            cacouTudo = "Y:" + this.pontuacao;
         } else {
-            cacouTudo = false;
+            cacouTudo = "N:" + this.pontuacao;
         }
-        this.scene.start('GameOver', this.pontuacao, cacouTudo);
+        console.log(cacouTudo);
+        this.scene.start('GameOver', cacouTudo);
     },
 
     update: function () {

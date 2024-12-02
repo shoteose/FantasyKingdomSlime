@@ -13,6 +13,8 @@ class MenuScene extends Phaser.Scene {
             frameHeight: 50,
         });
 
+        this.load.audio('click','assets/sounds/click.wav');
+
     }
 
     create() {
@@ -27,14 +29,17 @@ class MenuScene extends Phaser.Scene {
         this.comoJogar = this.add.sprite(375, 355, 'botoes', 2).setInteractive({ useHandCursor: true });
 
         this.jogar.once('pointerdown', function (pointer) {
+            this.sound.play('click');
             this.scene.start('CenaLoad');
         },this);
         
         this.opcoes.once('pointerdown', function (pointer) {
+            this.sound.play('click');
             this.scene.start('Options');
         },this);
         
         this.comoJogar.once('pointerdown', function (pointer) {
+            this.sound.play('click');
             this.scene.start('HowToScene');
         },this);
         

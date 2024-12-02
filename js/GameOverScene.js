@@ -11,20 +11,26 @@ class GameOverScene extends Phaser.Scene {
             frameWidth: 100,
             frameHeight: 50,
         });
+        this.load.audio('gameover','assets/sounds/')
     }
 
-    create(pontuacao,cacouTudo) {
+    create(string) {
 
         this.add.image(375, 375, 'background').setScale(0.79);
 
         this.add.image(375, 115, 'titulo');
         let textoGameOver;
-        if(cacouTudo){
+        let strings = string.split(":");
+        let pontuacao= strings[1];
+        let cacouTudo= string[0];
+
+        if(cacouTudo == "Y"){
 
             textoGameOver = this.add.text(375, 215, "Parabens!! Salvaste o teu reino e os Slimes!! Conseguiste reconstruir a Eolica!!", {
                 fontSize: '15px',
                 color: '#000000', 
-                align: 'center'
+                align: 'center',
+                fontStyle: 'bold'
             });
         
         }else{
@@ -32,7 +38,8 @@ class GameOverScene extends Phaser.Scene {
             textoGameOver = this.add.text(375, 215, "GameOver", {
             fontSize: '15px',
             color: '#000000', 
-            align: 'center'
+            align: 'center',
+            fontStyle: 'bold'
         });
         }
 
