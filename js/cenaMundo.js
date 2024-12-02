@@ -73,7 +73,7 @@ var CenaMundo = new Phaser.Class({
         obstaculos2.setCollisionByExclusion([-1]);
 
 
-        this.criarTextoinfo();
+        this.criarTextoInfo();
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
