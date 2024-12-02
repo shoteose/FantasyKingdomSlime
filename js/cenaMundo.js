@@ -28,6 +28,8 @@ var CenaMundo = new Phaser.Class({
 
         const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
 
+        const naoObstaculo2 = mapa.createLayer('naoObstaculo2', tiles, 0, 0);
+
         this.inimigos = [];
         this.lastDir;
         this.boost = false;

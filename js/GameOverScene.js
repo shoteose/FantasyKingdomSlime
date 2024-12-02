@@ -39,10 +39,10 @@ class GameOverScene extends Phaser.Scene {
 
         this.jogar.once('pointerdown', function (pointer) {
             this.scene.start('CenaLoad');
-        }.bind(this));
+        },this);
 
         this.opcoes.once('pointerdown', function (pointer) {
             this.scene.start('MenuScene');
-        }.bind(this));
+        },this);
     }
 }

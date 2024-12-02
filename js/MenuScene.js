@@ -28,15 +28,15 @@ class MenuScene extends Phaser.Scene {
 
         this.jogar.once('pointerdown', function (pointer) {
             this.scene.start('CenaLoad');
-        }.bind(this));
+        },this);
         
         this.opcoes.once('pointerdown', function (pointer) {
             this.scene.start('Options');
-        }.bind(this));
+        },this);
         
         this.comoJogar.once('pointerdown', function (pointer) {
             this.scene.start('HowToScene');
-        }.bind(this));
+        },this);
         
 
 
