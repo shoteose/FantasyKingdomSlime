@@ -13,17 +13,29 @@ class GameOverScene extends Phaser.Scene {
         });
     }
 
-    create(pontuacao) {
+    create(pontuacao,cacouTudo) {
 
         this.add.image(375, 375, 'background').setScale(0.79);
 
         this.add.image(375, 115, 'titulo');
+        let textoGameOver;
+        if(cacouTudo){
 
-        let textoGameOver = this.add.text(375, 215, "GameOver", {
+            textoGameOver = this.add.text(375, 215, "Parabens!! Salvaste o teu reino e os Slimes!! Conseguiste reconstruir a Eolica!!", {
+                fontSize: '15px',
+                color: '#000000', 
+                align: 'center'
+            });
+        
+        }else{
+            
+            textoGameOver = this.add.text(375, 215, "GameOver", {
             fontSize: '15px',
             color: '#000000', 
             align: 'center'
         });
+        }
+
         textoGameOver.setOrigin(0.5, 0.5);
 
         let textoPontuacao = this.add.text(375, 230, "Obtiveste " + pontuacao + " pontos!!", {

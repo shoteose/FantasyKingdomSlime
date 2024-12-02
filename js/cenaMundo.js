@@ -306,9 +306,15 @@ var CenaMundo = new Phaser.Class({
 
     gameOver: function () {
         this.gameover = true;
-        let pontTempo = 100 - (this.tempo / 10)
+        let pontTempo = 100 - (this.tempo / 10);
+        let cacouTudo;
         this.pontuacao = this.coletados * pontTempo - (3 - this.vidas) * 10;
-        this.scene.start('GameOver', this.pontuacao)
+        if (this.coletados == 10) {
+            cacouTudo = true;
+        } else {
+            cacouTudo = false;
+        }
+        this.scene.start('GameOver', this.pontuacao, cacouTudo);
     },
 
     update: function () {
