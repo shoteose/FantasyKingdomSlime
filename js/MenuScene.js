@@ -30,7 +30,7 @@ class MenuScene extends Phaser.Scene {
 
         this.jogar.once('pointerdown', function (pointer) {
             this.sound.play('click');
-            this.scene.start('CenaLoad');
+            this.scene.start('CenaLoad2');
         },this);
         
         this.opcoes.once('pointerdown', function (pointer) {
