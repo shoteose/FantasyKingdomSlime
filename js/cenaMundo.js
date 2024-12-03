@@ -38,12 +38,9 @@ var CenaMundo = new Phaser.Class({
         // Adicionar o player (frame 0)
         this.player = this.physics.add.sprite(150, 150, 'player', 0);
 
-        
-
         const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
 
         const naoObstaculo2 = mapa.createLayer('naoObstaculo2', tiles, 0, 0);
-
 
         // Limitar o movimento do player à área de jogo
         this.physics.world.bounds.width = mapa.widthInPixels;
@@ -200,12 +197,6 @@ var CenaMundo = new Phaser.Class({
             repeat: -1
         });
 
-        this.anims.create({
-            key: 'slimeMorre',
-            frames: this.anims.generateFrameNumbers('slime', { frames: [84, 85, 86, 87, 88] }),
-            frameRate: 10,
-            repeat: -1
-        });
     },
 
     createInimigos: function (obstaculos, obstaculos2) {
@@ -412,9 +403,9 @@ var CenaMundo = new Phaser.Class({
         let cacouTudo;
         this.pontuacao = this.coletados * pontTempo - (3 - this.vidas) * 10;
         if (this.coletados == 10) {
-            cacouTudo = "Y:" + this.pontuacao;
+            cacouTudo = "Y:" + this.pontuacao + ":1";
         } else {
-            cacouTudo = "N:" + this.pontuacao;
+            cacouTudo = "N:" + this.pontuacao+ ":1";
         }
         console.log(cacouTudo);
         this.scene.start('GameOver', cacouTudo);

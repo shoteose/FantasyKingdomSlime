@@ -5,14 +5,14 @@ class Options extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/back.jpeg');
-        this.load.image('titulo', 'assets/titulo.png');
-        this.load.spritesheet('botoes', 'assets/botaosF.png', {
+        this.load.image('background', 'assets/ui/back.jpeg');
+        this.load.image('titulo', 'assets/ui/titulo.png');
+        this.load.spritesheet('botoes', 'assets/ui/botaosF.png', {
             frameWidth: 100,
             frameHeight: 50,
         });
 
-        this.load.spritesheet('sons', 'assets/som.png', {
+        this.load.spritesheet('sons', 'assets/ui/som.png', {
             frameWidth: 120,
             frameHeight: 107,
         });

@@ -6,9 +6,9 @@ class MenuScene extends Phaser.Scene {
 
     preload() {
 
-        this.load.image('background','assets/back.jpeg');
-        this.load.image('titulo','assets/titulo.png');
-        this.load.spritesheet('botoes', 'assets/botaosF.png', {
+        this.load.image('background','assets/ui/back.jpeg');
+        this.load.image('titulo','assets/ui/titulo.png');
+        this.load.spritesheet('botoes', 'assets/ui/botaosF.png', {
             frameWidth: 100,
             frameHeight: 50,
         });
@@ -30,7 +30,7 @@ class MenuScene extends Phaser.Scene {
 
         this.jogar.once('pointerdown', function (pointer) {
             this.sound.play('click');
-            this.scene.start('CenaLoad2');
+            this.scene.start('CenaLoad');
         },this);
         
         this.opcoes.once('pointerdown', function (pointer) {

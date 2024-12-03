@@ -29,15 +29,14 @@ var CenaMundo2 = new Phaser.Class({
 
         // Criar camadas do mapa
 
-        const obstaculosHidden = mapa.createLayer('obstaculosHidden',tiles,0,0);
-        //const soloBase = mapa.createLayer('soloBase', tiles, 0, 0);
+        const soloBase = mapa.createLayer('soloBase', tiles, 0, 0);
 
         const solo = mapa.createLayer('solo', tiles, 0, 0);
-        //const sombra = mapa.createLayer('sombra', tiles, 0, 0);
+        const sombra = mapa.createLayer('sombra', tiles, 0, 0);
         
         
         // Adicionar o player (frame 0)
-        this.player = this.physics.add.sprite(150, 150, 'player', 0);
+        this.player = this.physics.add.sprite(105, 125, 'player', 0);
 
         const obstaculos = mapa.createLayer('obstaculos', tiles, 0, 0);
         const obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);

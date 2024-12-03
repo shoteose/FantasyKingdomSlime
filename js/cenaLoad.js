@@ -18,13 +18,13 @@ var CenaLoad = new Phaser.Class({
             frameWidth: 32,
             frameHeight: 32,
         });
-        this.load.spritesheet('slime', 'assets/characters/slime_og.png', {
+        this.load.spritesheet('slime', 'assets/characters/slime_ogP.png', {
             frameWidth: 32,
             frameHeight: 32,
         });
-        this.load.image('coracao','assets/coracao.png');
-        this.load.image('relampago','assets/relampago.png');
-        this.load.image('motorEolica','assets/motorEolica.png');
+        this.load.image('coracao','assets/elementos/coracao.png');
+        this.load.image('relampago','assets/elementos/relampago.png');
+        this.load.image('motorEolica','assets/elementos/motorEolica.png');
         this.load.audio('andar','assets/sounds/steps.ogg');
         this.load.audio('dano','assets/sounds/hitHurt.wav');
         this.load.audio('pickup','assets/sounds/pickupCoin.wav');
