@@ -33,14 +33,14 @@ var CenaMundo2 = new Phaser.Class({
 
         const solo = mapa.createLayer('solo', tiles, 0, 0);
         const sombra = mapa.createLayer('sombra', tiles, 0, 0);
-        
-        
+
+
         // Adicionar o player (frame 0)
         this.player = this.physics.add.sprite(105, 125, 'player', 0);
 
         const obstaculos = mapa.createLayer('obstaculos', tiles, 0, 0);
         const obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);
- 
+
         const naoObstaculo = mapa.createLayer('naoObstaculos', tiles, 0, 0);
         const naoObstaculo2 = mapa.createLayer('naoObstaculos2', tiles, 0, 0);
 
@@ -92,28 +92,8 @@ var CenaMundo2 = new Phaser.Class({
         this.createColecao(obstaculos, obstaculos2);
         this.createCoracoesVida(obstaculos, obstaculos2);
         this.criarColisaoPlayer(obstaculos, obstaculos2);
+        this.criarTextoInfo();
 
-        this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
-            fontSize: '15px',
-            color: '#000000',
-            align: 'center',
-            fontStyle: 'bold'
-        }).setOrigin(0.5, 0.5);
-
-        this.textoInstrucao2 = this.add.text(370, 200, "Para a Reconstruir e salvar o Reino e os Slimes.", {
-            fontSize: '15px',
-            color: '#000000',
-            align: 'center',
-            fontStyle: 'bold'
-        }).setOrigin(0.5, 0.5);
-
-
-        this.textoInstrucao3 = this.add.text(370, 215, "Cuidado que os Slimes que estão Agressivos", {
-            fontSize: '15px',
-            color: '#000000',
-            align: 'center',
-            fontStyle: 'bold'
-        }).setOrigin(0.5, 0.5);
 
     },
 
@@ -133,8 +113,6 @@ var CenaMundo2 = new Phaser.Class({
         let info = this.add.image(700, 20, 'motorEolica');
         info.setScale(0.15);
         info.setScrollFactor(0);
-
-
 
     },
 
@@ -164,6 +142,32 @@ var CenaMundo2 = new Phaser.Class({
 
         this.boost = false;
         this.energia.setVisible(false);
+    },
+
+    criarTextoInfo: function () {
+
+        this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
+
+        this.textoInstrucao2 = this.add.text(370, 200, "Para a Reconstruir e salvar o Reino e os Slimes.", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
+
+
+        this.textoInstrucao3 = this.add.text(370, 215, "Cuidado que os Slimes que estão Agressivos", {
+            fontSize: '15px',
+            color: '#000000',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0.5);
+
     },
 
     createAnimacoes: function () {
@@ -263,7 +267,7 @@ var CenaMundo2 = new Phaser.Class({
 
     createCoracoesVida: function (obstaculos, obstaculos2) {
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < this.vidas; i++) {
 
             let coordenadas = this.verificaXY(obstaculos, obstaculos2);
             x = coordenadas[0];
@@ -280,9 +284,20 @@ var CenaMundo2 = new Phaser.Class({
     },
 
     coletarVida: function (player, coracao) {
-        coracao.destroy();
-        this.sound.play('pickup');
-        this.ganharVida();
+
+        if (this.vidas == 3) {
+
+            coracao.destroy();
+            this.sound.play('pickup');
+
+        } else {
+
+            coracao.destroy();
+            this.sound.play('pickup');
+            this.ganharVida();
+
+        }
+
     },
 
     coletar: function (player, colecionavel) {
@@ -324,7 +339,7 @@ var CenaMundo2 = new Phaser.Class({
     },
 
     atualizarVidas: function () {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < this.vidas; i++) {
             if (i < this.vidas) {
                 this.sequenciaCoracoes[i].setVisible(true);
             } else {
@@ -398,7 +413,6 @@ var CenaMundo2 = new Phaser.Class({
         }
     },
 
-
     gameOver: function () {
         this.somAndar = false;
         this.sound.stopByKey('andar');
@@ -408,9 +422,9 @@ var CenaMundo2 = new Phaser.Class({
         let cacouTudo;
         this.pontuacao = this.coletados * pontTempo - (3 - this.vidas) * 10;
         if (this.coletados == 10) {
-            cacouTudo = "Y:" + this.pontuacao;
+            cacouTudo = "Y:" + this.pontuacao + ":2";
         } else {
-            cacouTudo = "N:" + this.pontuacao;
+            cacouTudo = "N:" + this.pontuacao + ":2";
         }
         console.log(cacouTudo);
         this.scene.start('GameOver', cacouTudo);

@@ -36,7 +36,17 @@ class Options extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5, 0.5);
 
-        this.botao = this.add.sprite(425, 275, 'sons', 0).setInteractive({ useHandCursor: true }).setScale(0.5);
+        let somDesligado;
+        let variavel;
+        if (this.sound.mute == true) {
+            somDesligado = true;
+            variavel = 3;
+        } else {
+            somDesligado = false;
+            variavel = 0;
+        }
+
+        this.botao = this.add.sprite(425, 275, 'sons', variavel).setInteractive({ useHandCursor: true }).setScale(0.5);
 
         this.voltar.once('pointerdown', function (pointer) {
             this.scene.start('MenuScene');
@@ -47,17 +57,33 @@ class Options extends Phaser.Scene {
 
             this.sound.play('click');
 
-            if (this.audio) {
-                this.audio = false;
-                console.log('Sem Som');
-                this.sound.mute = true;
-                this.botao.setFrame(3);
-            } else {
+            if (somDesligado) {
+
                 this.audio = true;
-                console.log('Com Som');
+                console.log('Com Som ' + somDesligado);
                 this.sound.mute = false;
                 this.botao.setFrame(0);
+
+            } else {
+
+                this.audio = false;
+                console.log('Sem Som ' + somDesligado);
+                this.sound.mute = true;
+                this.botao.setFrame(3);
+
             }
+
+            /* if (this.audio) {
+                 this.audio = false;
+                 console.log('Sem Som');
+                 this.sound.mute = true;
+                 this.botao.setFrame(3);
+             } else {
+                 this.audio = true;
+                 console.log('Com Som');
+                 this.sound.mute = false;
+                 this.botao.setFrame(0);
+             }*/
 
         }, this);
 

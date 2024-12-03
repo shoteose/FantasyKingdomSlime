@@ -113,7 +113,7 @@ var CenaMundo = new Phaser.Class({
 
     },
 
-    criarTextoInfo: function(){
+    criarTextoInfo: function () {
 
         this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
             fontSize: '15px',
@@ -258,7 +258,7 @@ var CenaMundo = new Phaser.Class({
 
     createCoracoesVida: function (obstaculos, obstaculos2) {
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 3; i++) {
 
             let coordenadas = this.verificaXY(obstaculos, obstaculos2);
             x = coordenadas[0];
@@ -275,9 +275,20 @@ var CenaMundo = new Phaser.Class({
     },
 
     coletarVida: function (player, coracao) {
-        coracao.destroy();
-        this.sound.play('pickup');
-        this.ganharVida();
+        
+        if (this.vidas == 3) {
+
+            coracao.destroy();
+            this.sound.play('pickup');
+
+        } else {
+
+            coracao.destroy();
+            this.sound.play('pickup');
+            this.ganharVida();
+
+        }
+
     },
 
     coletar: function (player, colecionavel) {
@@ -319,7 +330,7 @@ var CenaMundo = new Phaser.Class({
     },
 
     atualizarVidas: function () {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < this.sequenciaCoracoes.length; i++) {
             if (i < this.vidas) {
                 this.sequenciaCoracoes[i].setVisible(true);
             } else {
@@ -393,7 +404,6 @@ var CenaMundo = new Phaser.Class({
         }
     },
 
-
     gameOver: function () {
         this.somAndar = false;
         this.sound.stopByKey('andar');
@@ -405,7 +415,7 @@ var CenaMundo = new Phaser.Class({
         if (this.coletados == 10) {
             cacouTudo = "Y:" + this.pontuacao + ":1";
         } else {
-            cacouTudo = "N:" + this.pontuacao+ ":1";
+            cacouTudo = "N:" + this.pontuacao + ":1";
         }
         console.log(cacouTudo);
         this.scene.start('GameOver', cacouTudo);
