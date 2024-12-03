@@ -73,7 +73,7 @@ var CenaMundo = new Phaser.Class({
         obstaculos2.setCollisionByExclusion([-1]);
 
 
-
+        this.criarTextoInfo();
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -92,6 +92,31 @@ var CenaMundo = new Phaser.Class({
         this.createColecao(obstaculos, obstaculos2);
         this.createCoracoesVida(obstaculos, obstaculos2);
         this.criarColisaoPlayer(obstaculos, obstaculos2);
+
+    },
+
+    atualizaTimer: function () {
+        this.tempo++;
+        this.textoTempo.setText("Tempo: " + this.tempo);
+    },
+
+    criarUI: function (sequenciaCoracoes) {
+        for (let i = 0; i < this.vidas; i++) {
+            let coracao = this.add.image(20 + (i * 30), 20, 'coracao');
+            coracao.setScale(0.10);
+            coracao.setScrollFactor(0); // Faz com que não se mexa com a camara
+            sequenciaCoracoes.push(coracao);
+        }
+
+        let info = this.add.image(700, 20, 'motorEolica');
+        info.setScale(0.15);
+        info.setScrollFactor(0);
+
+
+
+    },
+
+    criarTextoInfo: function(){
 
         this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
             fontSize: '15px',
@@ -114,27 +139,6 @@ var CenaMundo = new Phaser.Class({
             align: 'center',
             fontStyle: 'bold'
         }).setOrigin(0.5, 0.5);
-
-    },
-
-    atualizaTimer: function () {
-        this.tempo++;
-        this.textoTempo.setText("Tempo: " + this.tempo);
-    },
-
-    criarUI: function (sequenciaCoracoes) {
-        for (let i = 0; i < 3; i++) {
-            let coracao = this.add.image(20 + (i * 30), 20, 'coracao');
-            coracao.setScale(0.10);
-            coracao.setScrollFactor(0); // Faz com que não se mexa com a camara
-            sequenciaCoracoes.push(coracao);
-        }
-
-        let info = this.add.image(700, 20, 'motorEolica');
-        info.setScale(0.15);
-        info.setScrollFactor(0);
-
-
 
     },
 
