@@ -82,18 +82,6 @@ class Options extends Phaser.Scene {
                 console.log('Sem Som ' + somDesligado);
             }
 
-            /* if (this.audio) {
-                 this.audio = false;
-                 console.log('Sem Som');
-                 this.sound.mute = true;
-                 this.botao.setFrame(3);
-             } else {
-                 this.audio = true;
-                 console.log('Com Som');
-                 this.sound.mute = false;
-                 this.botao.setFrame(0);
-             }*/
-
         }, this);
 
     }

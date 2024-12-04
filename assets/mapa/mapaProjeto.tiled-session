@@ -12,11 +12,11 @@
             "scaleInDock": 0.5
         },
         "map2.json": {
-            "scale": 2,
-            "selectedLayer": 3,
+            "scale": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 125.25,
-                "y": 143.5
+                "x": 405.5,
+                "y": 708
             }
         },
         "map2.json#spreedsheet": {

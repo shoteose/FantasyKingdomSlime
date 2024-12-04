@@ -92,11 +92,13 @@ var CenaMundo = new Phaser.Class({
 
     },
 
+    // Atualizar o Timer no ecra
     atualizaTimer: function () {
         this.tempo++;
         this.textoTempo.setText("Tempo: " + this.tempo);
     },
 
+    // Cria a UI dos corações e a imagem do motor para os colecionaveis
     criarUI: function (sequenciaCoracoes) {
         for (let i = 0; i < this.vidas; i++) {
             let coracao = this.add.image(20 + (i * 30), 20, 'coracao');
@@ -113,6 +115,7 @@ var CenaMundo = new Phaser.Class({
 
     },
 
+    // cria o texto da contextualização para oi jogo
     criarTextoInfo: function () {
 
         this.textoInstrucao = this.add.text(370, 175, "Apanha os componentes das Eolicas", {
@@ -150,23 +153,24 @@ var CenaMundo = new Phaser.Class({
         this.criarColisaoPlayer();
     },
 
+    // faz os slimes perseguirem o player
     perseguirPlayer: function (slime) {
         if (slime && slime.body) {
             this.physics.moveToObject(slime, this.player, 30);
         }
     },
-
+    // faz aparecer a imagem do boost e mete o boost como verdade
     fazBoost: function (pointer) {
         this.boost = true;
         this.energia.setVisible(true);
     },
-
+    // o oposto da função anterior
     tiraBoost: function (pointer) {
 
         this.boost = false;
         this.energia.setVisible(false);
     },
-
+    //cria as animaçoes
     createAnimacoes: function () {
         // Animações do player
         this.anims.create({
@@ -198,7 +202,7 @@ var CenaMundo = new Phaser.Class({
         });
 
     },
-
+    //cria os inimigos
     createInimigos: function (obstaculos, obstaculos2) {
         // Criar 10 inimigos (slimes)
         for (let i = 0; i < 10; i++) {
@@ -219,7 +223,8 @@ var CenaMundo = new Phaser.Class({
             this.inimigos.push(slimeBeta);
         }
     },
-
+    // verifica os tiles e retorna um array com as duas coordenadas para que não nasça em cima de obstaculos
+    //funciona a ir ver o tile com a coordenadada, nos tiles dos obstaculos, se for nulo o tile verificado significa que não tem lá obstaculo
     verificaXY: function (obstaculos, obstaculos2) {
         let coordenadas = [];
         let x, y, tile, tile2;
@@ -237,7 +242,7 @@ var CenaMundo = new Phaser.Class({
         return coordenadas;
 
     },
-
+    //cria os colecionaveis sem ficarem em cima dos obstaculos
     createColecao: function (obstaculos, obstaculos2) {
         // Criar 10 coletaveis
         for (let i = 0; i < 10; i++) {
@@ -255,7 +260,7 @@ var CenaMundo = new Phaser.Class({
 
         }
     },
-
+    //cria os coracoes sem ficarem em cima dos obstaculos
     createCoracoesVida: function (obstaculos, obstaculos2) {
 
         for (let i = 0; i < 3; i++) {
@@ -273,9 +278,9 @@ var CenaMundo = new Phaser.Class({
 
         }
     },
-
+    // funcao de colisao do player com os coraçoes, ao apanhar dá mais vida ao player caso tenha menos de 3, senão não
     coletarVida: function (player, coracao) {
-        
+
         if (this.vidas == 3) {
 
             coracao.destroy();
@@ -290,7 +295,7 @@ var CenaMundo = new Phaser.Class({
         }
 
     },
-
+    // funcao de coletar as pecas da eolica
     coletar: function (player, colecionavel) {
         colecionavel.destroy();
         this.sound.play('pickup');
@@ -303,7 +308,7 @@ var CenaMundo = new Phaser.Class({
         }
 
     },
-
+    // funcao de perder a vida
     perderVida: function () {
         this.cameras.main.shake(100);
         this.cameras.main.flash(100);
@@ -316,19 +321,19 @@ var CenaMundo = new Phaser.Class({
 
         this.atualizarVidas();
     },
-
+    // oposta da funcao anterior
     ganharVida: function () {
 
         this.vidas++;
         this.atualizarVidas();
     },
-
+    // funcao para recriar as colisoes com os obstaculos e inimigos
     criarColisaoPlayer: function (obstaculos, obstaculos2) {
         this.physics.add.collider(this.player, obstaculos);
         this.physics.add.collider(this.player, obstaculos2);
         this.playerCollider = this.physics.add.collider(this.player, this.inimigos, this.collisaoInimigo, null, this);
     },
-
+    // atualiza as imagens dos coracoes conforme a vida que tem
     atualizarVidas: function () {
         for (let i = 0; i < this.sequenciaCoracoes.length; i++) {
             if (i < this.vidas) {
@@ -338,7 +343,7 @@ var CenaMundo = new Phaser.Class({
             }
         }
     },
-
+    // trata do movimento do player, conforme a velocidade que muda conforme o boost
     movimento: function (velocidade) {
 
         // se player se mexer faz com as instrucoes desapareçam
@@ -403,7 +408,7 @@ var CenaMundo = new Phaser.Class({
             }
         }
     },
-
+    // trata do gameover, fazendo pontuação e lançando o jogador para a cena do gameover com as informações nessesárias
     gameOver: function () {
         this.somAndar = false;
         this.sound.stopByKey('andar');
@@ -420,7 +425,7 @@ var CenaMundo = new Phaser.Class({
         console.log(cacouTudo);
         this.scene.start('GameOver', cacouTudo);
     },
-
+    // update
     update: function () {
         this.atualizarVidas();
 
