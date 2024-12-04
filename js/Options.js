@@ -38,11 +38,16 @@ class Options extends Phaser.Scene {
 
         let somDesligado;
         let variavel;
+
         if (this.sound.mute == true) {
+
             somDesligado = true;
+            console.log(somDesligado + " no if inicial");
             variavel = 3;
         } else {
+
             somDesligado = false;
+            console.log(somDesligado + " no if inicial");
             variavel = 0;
         }
 
@@ -57,20 +62,24 @@ class Options extends Phaser.Scene {
 
             this.sound.play('click');
 
+            console.log(somDesligado + "  : audio -> " + this.audio);
+
             if (somDesligado) {
 
                 this.audio = true;
-                console.log('Com Som ' + somDesligado);
+
                 this.sound.mute = false;
                 this.botao.setFrame(0);
-
+                somDesligado = false;
+                console.log('Com Som ' + somDesligado);
             } else {
 
                 this.audio = false;
-                console.log('Sem Som ' + somDesligado);
+
                 this.sound.mute = true;
                 this.botao.setFrame(3);
-
+                somDesligado = true;
+                console.log('Sem Som ' + somDesligado);
             }
 
             /* if (this.audio) {
