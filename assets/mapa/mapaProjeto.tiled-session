@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map2.json",
+    "activeFile": "mapa.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -15,19 +15,19 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 405.5,
-                "y": 708
+                "x": 470.5,
+                "y": 541
             }
         },
         "map2.json#spreedsheet": {
             "scaleInDock": 2
         },
         "mapa.tmx": {
-            "scale": 0.3898958333333333,
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1064.3868554635321,
-                "y": 478.33288805770775
+                "x": 1130.6666666666665,
+                "y": 445.33333333333326
             }
         },
         "mapa.tmx#spreedsheet": {
@@ -46,8 +46,8 @@
     ],
     "project": "mapaProjeto.tiled-project",
     "recentFiles": [
-        "mapa.tmx",
-        "map2.json"
+        "map2.json",
+        "mapa.tmx"
     ],
     "tileset.embedInMap": true
 }
