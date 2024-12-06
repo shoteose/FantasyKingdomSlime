@@ -35,18 +35,22 @@ var CenaMundo = new Phaser.Class({
         const obstaculos = mapa.createLayer('obstaculos', tiles, 0, 0);
         const obstaculos2 = mapa.createLayer('obstaculos2', tiles, 0, 0);
 
-        // Adicionar o player (frame 0)
-        this.player = this.physics.add.sprite(150, 150, 'player', 0);
-
-        const naoObstaculo = mapa.createLayer('naoObstaculo', tiles, 0, 0);
-
-        const naoObstaculo2 = mapa.createLayer('naoObstaculo2', tiles, 0, 0);
-
         // Limitar o movimento do player à área de jogo
         this.physics.world.bounds.width = mapa.widthInPixels;
         this.physics.world.bounds.height = mapa.heightInPixels;
-        this.player.setCollideWorldBounds(true);
 
+        // Adicionar o player (frame 0)
+        this.player = this.physics.add.sprite(150, 150, 'player', 0);
+
+        this.createAnimacoes()
+
+        this.createInimigos(obstaculos, obstaculos2);
+        this.createColecao(obstaculos, obstaculos2);
+        this.createCoracoesVida(obstaculos, obstaculos2);
+
+        const naoObstaculo = mapa.createLayer('naoObstaculos', tiles, 0, 0);
+
+        const naoObstaculo2 = mapa.createLayer('naoObstaculos2', tiles, 0, 0);
 
         this.relogio = this.time.addEvent({ delay: 1000, callback: this.atualizaTimer, callbackScope: this, loop: true });
 
@@ -64,13 +68,10 @@ var CenaMundo = new Phaser.Class({
         this.energia.setScrollFactor(0);
 
         this.sequenciaCoracoes = [];
-        this.criarUI(this.sequenciaCoracoes);
 
         obstaculos.setCollisionByExclusion([-1]);
         obstaculos2.setCollisionByExclusion([-1]);
 
-
-        this.criarTextoInfo();
 
         // Input interação com as 4 setas de direção
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -84,11 +85,15 @@ var CenaMundo = new Phaser.Class({
         // Corrigir desenho de linhas
         this.cameras.main.roundPixels = true;
 
-        this.createAnimacoes();
-        this.createInimigos(obstaculos, obstaculos2);
-        this.createColecao(obstaculos, obstaculos2);
-        this.createCoracoesVida(obstaculos, obstaculos2);
-        this.criarColisaoPlayer(obstaculos, obstaculos2);
+
+
+        this.player.setCollideWorldBounds(true);
+
+        this.criarTextoInfo();
+
+        this.criarUI(this.sequenciaCoracoes);;
+
+        this.criarColisao(obstaculos, obstaculos2);
 
     },
 
@@ -150,7 +155,6 @@ var CenaMundo = new Phaser.Class({
 
         this.sound.play('dano');
         this.perderVida();
-        this.criarColisaoPlayer();
     },
 
     // faz os slimes perseguirem o player
@@ -215,8 +219,7 @@ var CenaMundo = new Phaser.Class({
 
             slimeBeta.anims.play('slimeAnimacao', true);
 
-            this.physics.add.collider(slimeBeta, obstaculos);
-            this.physics.add.collider(slimeBeta, obstaculos2);
+
 
             this.physics.add.overlap(this.player, slimeBeta, this.collisaoInimigo, false, this);
 
@@ -229,6 +232,7 @@ var CenaMundo = new Phaser.Class({
         let coordenadas = [];
         let x, y, tile, tile2;
         do {
+            console.log(this.physics.world.bounds.width);
             x = Phaser.Math.RND.between(0, this.physics.world.bounds.width);
             y = Phaser.Math.RND.between(0, this.physics.world.bounds.height);
 
@@ -328,9 +332,15 @@ var CenaMundo = new Phaser.Class({
         this.atualizarVidas();
     },
     // funcao para recriar as colisoes com os obstaculos e inimigos
-    criarColisaoPlayer: function (obstaculos, obstaculos2) {
+    criarColisao: function (obstaculos, obstaculos2) {
         this.physics.add.collider(this.player, obstaculos);
         this.physics.add.collider(this.player, obstaculos2);
+        this.inimigos.forEach((inimigo) => {
+
+            this.physics.add.collider(inimigo, obstaculos);
+            this.physics.add.collider(inimigo, obstaculos2);
+
+        });
         this.playerCollider = this.physics.add.collider(this.player, this.inimigos, this.collisaoInimigo, null, this);
     },
     // atualiza as imagens dos coracoes conforme a vida que tem
